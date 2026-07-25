@@ -408,6 +408,8 @@ public class TextCheckCell extends FrameLayout {
         info.setClassName("android.widget.Switch");
         info.setCheckable(true);
         info.setChecked(checkBox.isChecked());
+        info.setClickable(true);
+        info.addAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_CLICK);
         StringBuilder sb = new StringBuilder();
         sb.append(textView.getText());
         if (!TextUtils.isEmpty(valueTextView.getText())) {

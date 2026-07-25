@@ -117,6 +117,12 @@ public class ActionBarMenuSubItem extends FrameLayout {
     public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(info);
         info.setEnabled(isEnabled());
+        info.setClassName(android.widget.Button.class.getName());
+        info.setClickable(true);
+        info.addAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_CLICK);
+        if (textView != null && textView.getText() != null) {
+            info.setContentDescription(textView.getText());
+        }
         if (checkView != null && checkView.isChecked()) {
             info.setCheckable(true);
             info.setChecked(checkView.isChecked());

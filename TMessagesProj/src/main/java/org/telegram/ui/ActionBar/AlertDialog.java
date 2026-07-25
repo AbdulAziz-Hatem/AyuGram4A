@@ -61,6 +61,7 @@ import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
 import org.telegram.messenger.SharedConfig;
 import org.telegram.ui.Components.AnimatedFloat;
+import org.telegram.ui.Components.AccessibilityUtils;
 import org.telegram.ui.Components.EffectsTextView;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.LineProgressView;
@@ -934,6 +935,7 @@ public class AlertDialog extends Dialog implements Drawable.Callback, Notificati
                 textView.setText(positiveButtonText.toString());
                 textView.setBackgroundDrawable(Theme.getRoundRectSelectorDrawable(AndroidUtilities.dp(6), getThemedColor(dialogButtonColorKey)));
                 textView.setPadding(AndroidUtilities.dp(12), 0, AndroidUtilities.dp(12), 0);
+                AccessibilityUtils.makeButton(textView);
                 if (verticalButtons) {
                     buttonsLayout.addView(textView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 36, LocaleController.isRTL ? Gravity.LEFT : Gravity.RIGHT));
                 } else {
@@ -974,6 +976,7 @@ public class AlertDialog extends Dialog implements Drawable.Callback, Notificati
                 textView.setText(negativeButtonText.toString());
                 textView.setBackgroundDrawable(Theme.getRoundRectSelectorDrawable(AndroidUtilities.dp(6), getThemedColor(dialogButtonColorKey)));
                 textView.setPadding(AndroidUtilities.dp(12), 0, AndroidUtilities.dp(12), 0);
+                AccessibilityUtils.makeButton(textView);
                 if (verticalButtons) {
                     buttonsLayout.addView(textView, 0, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 36, LocaleController.isRTL ? Gravity.LEFT : Gravity.RIGHT));
                 } else {
@@ -1014,6 +1017,7 @@ public class AlertDialog extends Dialog implements Drawable.Callback, Notificati
                 textView.setText(neutralButtonText.toString());
                 textView.setBackground(Theme.getRoundRectSelectorDrawable(AndroidUtilities.dp(6), getThemedColor(dialogButtonColorKey)));
                 textView.setPadding(AndroidUtilities.dp(12), 0, AndroidUtilities.dp(12), 0);
+                AccessibilityUtils.makeButton(textView);
                 if (verticalButtons) {
                     buttonsLayout.addView(textView, 1, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 36, LocaleController.isRTL ? Gravity.LEFT : Gravity.RIGHT));
                 } else {

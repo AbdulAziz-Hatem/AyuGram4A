@@ -4392,6 +4392,13 @@ public class DialogCell extends BaseCell {
     @Override
     public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(info);
+        info.setClassName(android.widget.Button.class.getName());
+        info.setClickable(true);
+        info.setFocusable(true);
+        String titleDesc = nameLayout != null ? nameLayout.getText().toString() : "";
+        String msgDesc = lastMessageString != null ? lastMessageString.toString() : "";
+        info.setContentDescription(titleDesc + ", " + msgDesc);
+
         if (isFolderCell() && archivedChatsDrawable != null && SharedConfig.archiveHidden && archivedChatsDrawable.pullProgress == 0.0f) {
             info.setVisibleToUser(false);
         } else {
