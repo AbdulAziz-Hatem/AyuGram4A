@@ -199,5 +199,7 @@ public class NotificationsCheckCell extends FrameLayout {
         info.setContentDescription(sb);
         info.setCheckable(true);
         info.setChecked(checkBox.isChecked());
+        info.setClickable(true);
+        info.addAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_CLICK);
     }
 }

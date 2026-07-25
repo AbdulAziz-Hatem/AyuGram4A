@@ -816,6 +816,7 @@ public class BottomSheet extends Dialog {
 
             currentType = type;
             setBackgroundDrawable(Theme.getSelectorDrawable(false));
+            org.telegram.ui.Components.AccessibilityUtils.makeButton(this);
             //setPadding(AndroidUtilities.dp(16), 0, AndroidUtilities.dp(16), 0);
 
             imageView = new ImageView(context);

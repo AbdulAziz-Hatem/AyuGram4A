@@ -2804,6 +2804,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         }
 
         videoCallItem = menu.addItem(video_call_item, R.drawable.profile_video);
+        org.telegram.ui.Components.AccessibilityUtils.makeButton(videoCallItem);
         videoCallItem.setContentDescription(LocaleController.getString("VideoCall", R.string.VideoCall));
         if (chatId != 0) {
             callItem = menu.addItem(call_item, R.drawable.msg_voicechat2);
@@ -2816,9 +2817,12 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             callItem = menu.addItem(call_item, R.drawable.ic_call);
             callItem.setContentDescription(LocaleController.getString("Call", R.string.Call));
         }
+        org.telegram.ui.Components.AccessibilityUtils.makeButton(callItem);
         editItem = menu.addItem(edit_channel, R.drawable.group_edit_profile);
+        org.telegram.ui.Components.AccessibilityUtils.makeButton(editItem);
         editItem.setContentDescription(LocaleController.getString("Edit", R.string.Edit));
         otherItem = menu.addItem(10, R.drawable.ic_ab_other, resourcesProvider);
+        org.telegram.ui.Components.AccessibilityUtils.makeButton(otherItem);
         ttlIconView = new ImageView(context);
         ttlIconView.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_actionBarDefaultIcon), PorterDuff.Mode.MULTIPLY));
         AndroidUtilities.updateViewVisibilityAnimated(ttlIconView, false, 0.8f, false);
@@ -4151,6 +4155,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         updateProfileData(true);
 
         writeButton = new RLottieImageView(context);
+        org.telegram.ui.Components.AccessibilityUtils.makeButton(writeButton);
         Drawable drawable = CanvasUtils.createFabBackground();
         writeButton.setBackground(drawable);
         StateListAnimator animator = new StateListAnimator();
@@ -9072,6 +9077,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     } else if (position == debugHeaderRow) {
                         headerCell.setText(LocaleController.getString("SettingsDebug", R.string.SettingsDebug));
                     }
+                    org.telegram.ui.Components.AccessibilityUtils.makeButton(holder.itemView);
                     break;
                 case VIEW_TYPE_TEXT_DETAIL_MULTILINE:
                 case VIEW_TYPE_TEXT_DETAIL:

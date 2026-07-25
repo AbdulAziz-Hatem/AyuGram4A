@@ -362,6 +362,9 @@ public class TextSettingsCell extends FrameLayout {
         super.onInitializeAccessibilityNodeInfo(info);
         info.setText(textView.getText() + (valueTextView != null && valueTextView.getVisibility() == View.VISIBLE ? "\n" + valueTextView.getText() : ""));
         info.setEnabled(isEnabled());
+        info.setClassName(android.widget.Button.class.getName());
+        info.setClickable(true);
+        info.addAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_CLICK);
     }
 
     public void setDrawLoading(boolean drawLoading, int size, boolean animated) {

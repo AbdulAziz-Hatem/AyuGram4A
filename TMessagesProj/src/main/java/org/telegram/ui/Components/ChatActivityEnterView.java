@@ -1946,6 +1946,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
             };
             ((ChatActivityEnterViewStaticIconView) emojiButton).setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_messagePanelIcons), PorterDuff.Mode.SRC_IN));
         }
+        org.telegram.ui.Components.AccessibilityUtils.makeButton(emojiButton);
         emojiButton.setContentDescription(LocaleController.getString(R.string.AccDescrEmojiButton));
         emojiButton.setFocusable(true);
         int padding = AndroidUtilities.dp(9.5f);
@@ -2007,6 +2008,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
             notifyButton.setImageDrawable(notifySilentDrawable);
             if (ExteraConfig.useSolarIcons) notifySilentDrawable.setPaddings(0, -AndroidUtilities.dp(0.5f), 0, -AndroidUtilities.dp(0.5f));
             notifySilentDrawable.setCrossOut(silent, false);
+            org.telegram.ui.Components.AccessibilityUtils.makeButton(notifyButton);
             notifyButton.setContentDescription(silent ? LocaleController.getString("AccDescrChanSilentOn", R.string.AccDescrChanSilentOn) : LocaleController.getString("AccDescrChanSilentOff", R.string.AccDescrChanSilentOff));
             notifyButton.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_messagePanelIcons), PorterDuff.Mode.MULTIPLY));
             notifyButton.setScaleType(ImageView.ScaleType.CENTER);
@@ -2032,6 +2034,8 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
             });
 
             attachButton = new ImageView(context);
+            org.telegram.ui.Components.AccessibilityUtils.makeButton(attachButton);
+            attachButton.setContentDescription(LocaleController.getString("AccDescrAttachButton", R.string.AccDescrAttachButton));
             attachButton.setScaleType(ImageView.ScaleType.CENTER);
             attachButton.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_messagePanelIcons), PorterDuff.Mode.MULTIPLY));
             attachButton.setImageResource(R.drawable.input_attach);
@@ -2417,9 +2421,11 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
             audioVideoSendButton = new ChatActivityEnterViewStaticIconView(context, this);
             ((ChatActivityEnterViewStaticIconView) audioVideoSendButton).setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_messagePanelIcons), PorterDuff.Mode.SRC_IN));
         }
+        audioVideoSendButton.setContentDescription(LocaleController.getString("AccDescrVoiceMessage", R.string.AccDescrVoiceMessage));
         audioVideoSendButton.setFocusable(true);
         audioVideoSendButton.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
         audioVideoSendButton.setAccessibilityDelegate(mediaMessageButtonsDelegate);
+        org.telegram.ui.Components.AccessibilityUtils.makeButton(audioVideoSendButton);
         padding = AndroidUtilities.dp(9.5f);
         audioVideoSendButton.setPadding(padding, padding, padding, padding);
         audioVideoButtonContainer.addView(audioVideoSendButton, LayoutHelper.createFrame(48, 48));
@@ -2566,6 +2572,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                 return super.onTouchEvent(event);
             }
         };
+        org.telegram.ui.Components.AccessibilityUtils.makeButton(sendButton);
         sendButton.setVisibility(INVISIBLE);
         int color = getThemedColor(Theme.key_chat_messagePanelSend);
         sendButton.setContentDescription(LocaleController.getString("Send", R.string.Send));

@@ -192,6 +192,7 @@ import org.telegram.ui.Adapters.MentionsAdapter;
 import org.telegram.ui.Cells.CheckBoxCell;
 import org.telegram.ui.Cells.PhotoPickerPhotoCell;
 import org.telegram.ui.Components.AlertsCreator;
+import org.telegram.ui.Components.AccessibilityUtils;
 import org.telegram.ui.Components.AnimatedEmojiDrawable;
 import org.telegram.ui.Components.AnimatedEmojiSpan;
 import org.telegram.ui.Components.AnimatedFileDrawable;
@@ -5527,6 +5528,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
 
         for (int a = 0; a < 3; a++) {
             fullscreenButton[a] = new ImageView(parentActivity);
+            AccessibilityUtils.makeButton(fullscreenButton[a]);
             fullscreenButton[a].setImageResource(R.drawable.msg_maxvideo);
             fullscreenButton[a].setContentDescription(LocaleController.getString("AccSwitchToFullscreen", R.string.AccSwitchToFullscreen));
             fullscreenButton[a].setScaleType(ImageView.ScaleType.CENTER);
@@ -5997,6 +5999,9 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
         containerView.addView(videoAvatarTooltip, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT | Gravity.BOTTOM, 0, 8, 0, 0));
 
         pickerViewSendButton = new ImageView(parentActivity) {
+            {
+                AccessibilityUtils.makeButton(this);
+            }
             @Override
             public boolean dispatchTouchEvent(MotionEvent ev) {
                 return bottomTouchEnabled && super.dispatchTouchEvent(ev);
@@ -6266,6 +6271,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
         pickerView.addView(itemsLayout, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, 48, Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM, 0, 0, 70, 0));
 
         cropItem = new ImageView(parentActivity);
+        AccessibilityUtils.makeButton(cropItem);
         cropItem.setScaleType(ImageView.ScaleType.CENTER);
         cropItem.setImageResource(R.drawable.msg_photo_crop);
         cropItem.setBackgroundDrawable(Theme.createSelectorDrawable(Theme.ACTION_BAR_WHITE_SELECTOR_COLOR));
@@ -6292,6 +6298,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
         cropItem.setContentDescription(LocaleController.getString("CropImage", R.string.CropImage));
 
         rotateItem = new ImageView(parentActivity);
+        AccessibilityUtils.makeButton(rotateItem);
         rotateItem.setScaleType(ImageView.ScaleType.CENTER);
         rotateItem.setImageResource(R.drawable.msg_photo_rotate);
         rotateItem.setBackgroundDrawable(Theme.createSelectorDrawable(Theme.ACTION_BAR_WHITE_SELECTOR_COLOR));
@@ -6300,6 +6307,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
         rotateItem.setContentDescription(LocaleController.getString("AccDescrRotate", R.string.AccDescrRotate));
 
         mirrorItem = new ImageView(parentActivity);
+        AccessibilityUtils.makeButton(mirrorItem);
         mirrorItem.setScaleType(ImageView.ScaleType.CENTER);
         mirrorItem.setImageResource(R.drawable.msg_photo_flip);
         mirrorItem.setBackgroundDrawable(Theme.createSelectorDrawable(Theme.ACTION_BAR_WHITE_SELECTOR_COLOR));
@@ -6308,6 +6316,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
         mirrorItem.setContentDescription(LocaleController.getString("AccDescrMirror", R.string.AccDescrMirror));
 
         paintItem = new ImageView(parentActivity);
+        AccessibilityUtils.makeButton(paintItem);
         paintItem.setScaleType(ImageView.ScaleType.CENTER);
         paintItem.setImageResource(R.drawable.msg_photo_draw);
         paintItem.setBackgroundDrawable(Theme.createSelectorDrawable(Theme.ACTION_BAR_WHITE_SELECTOR_COLOR));
@@ -6334,6 +6343,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
         paintItem.setContentDescription(LocaleController.getString("AccDescrPhotoEditor", R.string.AccDescrPhotoEditor));
 
         muteItem = new ImageView(parentActivity);
+        AccessibilityUtils.makeButton(muteItem);
         muteItem.setScaleType(ImageView.ScaleType.CENTER);
         muteItem.setBackgroundDrawable(Theme.createSelectorDrawable(Theme.ACTION_BAR_WHITE_SELECTOR_COLOR));
         containerView.addView(muteItem, LayoutHelper.createFrame(48, 48, Gravity.LEFT | Gravity.BOTTOM, 16, 0, 0, 0));
@@ -6355,6 +6365,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
         });
 
         cameraItem = new ImageView(parentActivity);
+        AccessibilityUtils.makeButton(cameraItem);
         cameraItem.setScaleType(ImageView.ScaleType.CENTER);
         cameraItem.setImageResource(R.drawable.photo_add);
         cameraItem.setBackgroundDrawable(Theme.createSelectorDrawable(Theme.ACTION_BAR_WHITE_SELECTOR_COLOR));
@@ -6369,6 +6380,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
         });
 
         tuneItem = new ImageView(parentActivity);
+        AccessibilityUtils.makeButton(tuneItem);
         tuneItem.setScaleType(ImageView.ScaleType.CENTER);
         tuneItem.setImageResource(R.drawable.msg_photo_settings);
         tuneItem.setBackgroundDrawable(Theme.createSelectorDrawable(Theme.ACTION_BAR_WHITE_SELECTOR_COLOR));
@@ -6395,6 +6407,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
         tuneItem.setContentDescription(LocaleController.getString("AccDescrPhotoAdjust", R.string.AccDescrPhotoAdjust));
 
         compressItem = new ImageView(parentActivity);
+        AccessibilityUtils.makeButton(compressItem);
         compressItem.setTag(1);
         compressItem.setScaleType(ImageView.ScaleType.CENTER);
         compressItem.setBackgroundDrawable(Theme.createSelectorDrawable(Theme.ACTION_BAR_WHITE_SELECTOR_COLOR));
@@ -6430,6 +6443,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
         });
 
         timeItem = new ImageView(parentActivity);
+        AccessibilityUtils.makeButton(timeItem);
         timeItem.setScaleType(ImageView.ScaleType.CENTER);
         timeItem.setImageResource(R.drawable.msg_autodelete);
         timeItem.setBackgroundDrawable(Theme.createSelectorDrawable(Theme.ACTION_BAR_WHITE_SELECTOR_COLOR));
@@ -7105,6 +7119,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
 
         if (AndroidUtilities.isAccessibilityScreenReaderEnabled()) {
             playButtonAccessibilityOverlay = new View(activityContext);
+            AccessibilityUtils.makeButton(playButtonAccessibilityOverlay);
             playButtonAccessibilityOverlay.setContentDescription(LocaleController.getString("AccActionPlay", R.string.AccActionPlay));
             playButtonAccessibilityOverlay.setFocusable(true);
             containerView.addView(playButtonAccessibilityOverlay, LayoutHelper.createFrame(64, 64, Gravity.CENTER));
@@ -8209,6 +8224,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
         videoPlayerControlFrameLayout.addView(videoPlayerTime, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.RIGHT | Gravity.TOP, 0, 15, 12, 0));
 
         exitFullscreenButton = new ImageView(containerView.getContext());
+        AccessibilityUtils.makeButton(exitFullscreenButton);
         exitFullscreenButton.setImageResource(R.drawable.msg_minvideo);
         exitFullscreenButton.setContentDescription(LocaleController.getString("AccExitFullscreen", R.string.AccExitFullscreen));
         exitFullscreenButton.setScaleType(ImageView.ScaleType.CENTER);
