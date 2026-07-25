@@ -18,6 +18,17 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
+      - name: Create API_KEYS
+        run: |
+          cat > API_KEYS << 'EOF'
+          APP_ID = ${{ secrets.APP_ID || 6 }}
+          APP_HASH = "${{ secrets.APP_HASH || 'eb06d4abfb49dc3eeb1aeb98ae0f581e' }}"
+          MAPS_V2_API = ${{ secrets.MAPS_KEY }}
+          SIGNING_KEY_PASSWORD = ${{ secrets.CERT_KEY || 'android' }}
+          SIGNING_KEY_ALIAS = ${{ secrets.CERT_KEY || 'android' }}
+          SIGNING_KEY_STORE_PASSWORD = ${{ secrets.CERT_KEY || 'android' }}
+          EOF
+
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
