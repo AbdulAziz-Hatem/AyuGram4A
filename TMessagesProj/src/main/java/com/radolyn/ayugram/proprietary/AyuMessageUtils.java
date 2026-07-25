@@ -27,16 +27,16 @@ public class AyuMessageUtils {
         }
     }
 
-    public static void map(EditedMessage editedMessage, TLRPC.TL_message msg, int currentAccount) {
-        msg.id = editedMessage.messageId;
-        msg.date = editedMessage.date;
-        msg.message = editedMessage.text != null ? editedMessage.text : "";
+    public static void map(AyuMessageBase msgBase, TLRPC.TL_message msg, int currentAccount) {
+        msg.id = msgBase.messageId;
+        msg.date = msgBase.date;
+        msg.message = msgBase.text != null ? msgBase.text : "";
     }
 
-    public static void mapMedia(EditedMessage editedMessage, TLRPC.TL_message msg) {
-        if (editedMessage.documentType == com.radolyn.ayugram.AyuConstants.DOCUMENT_TYPE_PHOTO) {
+    public static void mapMedia(AyuMessageBase msgBase, TLRPC.TL_message msg) {
+        if (msgBase.documentType == com.radolyn.ayugram.AyuConstants.DOCUMENT_TYPE_PHOTO) {
             msg.media = new TLRPC.TL_messageMediaPhoto();
-        } else if (editedMessage.documentType == com.radolyn.ayugram.AyuConstants.DOCUMENT_TYPE_FILE) {
+        } else if (msgBase.documentType == com.radolyn.ayugram.AyuConstants.DOCUMENT_TYPE_FILE) {
             msg.media = new TLRPC.TL_messageMediaDocument();
         }
     }
