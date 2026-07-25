@@ -15,8 +15,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: recursive
           fetch-depth: 0
+
+      - name: Remove leftover submodule refs
+        run: |
+          rm -rf .git/modules 2>/dev/null || true
+          git submodule deinit -f . 2>/dev/null || true
 
       - name: Create API_KEYS
         run: |
