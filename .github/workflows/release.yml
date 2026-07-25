@@ -12,35 +12,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
-      CCACHE_NOHASHDIR: "true"
-      CCACHE_MAXSIZE: "10G"
-      CCACHE_HARDLINK: "true"
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
           fetch-depth: 0
-          token: ${{ secrets.GH_TOKEN }}
-
-      - uses: DamianReeves/write-file-action@master
-        with:
-          path: ./API_KEYS
-          contents: |
-            APP_ID = ${{ secrets.APP_ID || 6 }}
-            APP_HASH = "${{ secrets.APP_HASH || 'eb06d4abfb49dc3eeb1aeb98ae0f581e' }}"
-            MAPS_V2_API = ${{ secrets.MAPS_KEY }}
-            SIGNING_KEY_PASSWORD = ${{ secrets.CERT_KEY }}
-            SIGNING_KEY_ALIAS = ${{ secrets.CERT_KEY }}
-            SIGNING_KEY_STORE_PASSWORD = ${{ secrets.CERT_KEY }}
-          write-mode: overwrite
-
-      - name: Decode Keystore
-        run: |
-          if [ -n "${{ secrets.KEYSTORE_BASE64 }}" ]; then
-            echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > ./release.keystore 2>/dev/null || true
-          fi
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -58,12 +34,6 @@ jobs:
           key: gradle-builds-${{ github.sha }}
           restore-keys: gradle-builds
 
-      - name: Set up ccache
-        uses: hendrikmuhs/ccache-action@v1.2
-        with:
-          key: ccache
-          restore-keys: ccache
-
       - name: Setup Android SDK Tools
         uses: android-actions/setup-android@v2
 
@@ -77,23 +47,6 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew assembleAfatRelease
-
-      - name: Sign APK
-        run: |
-          if [ -f ./release.keystore ]; then
-            for apk in TMessagesProj/build/outputs/apk/afat/release/*.apk; do
-              if [ -f "$apk" ]; then
-                java -jar /usr/local/lib/android-sdk/build-tools/*/apksigner sign \
-                  --ks ./release.keystore \
-                  --ks-key-alias "${{ secrets.CERT_KEY }}" \
-                  --ks-pass pass:"${{ secrets.CERT_KEY }}" \
-                  --key-pass pass:"${{ secrets.CERT_KEY }}" \
-                  --out "${apk%.*}-signed.apk" "$apk"
-              fi
-            done
-          else
-            echo "No keystore found - skipping signing"
-          fi
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
@@ -110,7 +63,6 @@ jobs:
           name: AyuGram ${{ github.event.inputs.version }}
           body_file: CHANGELOG.md
           files: |
-            TMessagesProj/build/outputs/apk/afat/release/*-signed.apk
             TMessagesProj/build/outputs/apk/afat/release/*.apk
           draft: false
           prerelease: false
