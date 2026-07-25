@@ -37,8 +37,9 @@ jobs:
           write-mode: overwrite
 
       - name: Decode Keystore
-        if: secrets.CERT_KEY != ''
-        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > ./release.keystore
+        if: ${{ secrets.CERT_KEY != '' }}
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > ./release.keystore 2>/dev/null || true
 
       - name: Setup Java
         uses: actions/setup-java@v3
@@ -67,6 +68,7 @@ jobs:
 
       - name: Prepare Environment
         run: |
+          sudo apt-get update
           sudo apt-get install bison gcc make curl ninja-build ccache -y
 
       - name: Grant execute permission for gradlew
@@ -76,7 +78,7 @@ jobs:
         run: ./gradlew assembleAfatRelease
 
       - name: Sign APK
-        if: secrets.CERT_KEY != ''
+        if: ${{ secrets.CERT_KEY != '' }}
         run: |
           for apk in TMessagesProj/build/outputs/apk/afat/release/*.apk; do
             if [ -f "$apk" ]; then
@@ -97,7 +99,7 @@ jobs:
             TMessagesProj/build/outputs/apk/afat/release/*.apk
 
       - name: Create Release
-        if: github.event_name == 'workflow_dispatch'
+        if: ${{ github.event_name == 'workflow_dispatch' }}
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ github.event.inputs.version }}
