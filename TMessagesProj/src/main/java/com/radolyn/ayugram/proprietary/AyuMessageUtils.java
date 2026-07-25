@@ -1,11 +1,11 @@
 package com.radolyn.ayugram.proprietary;
 
-import com.radolyn.ayugram.database.entities.EditedMessage;
+import com.radolyn.ayugram.database.entities.AyuMessageBase;
 import org.telegram.tgnet.TLRPC;
 
 public class AyuMessageUtils {
 
-    public static void map(AyuSavePreferences prefs, EditedMessage revision) {
+    public static void map(AyuSavePreferences prefs, AyuMessageBase revision) {
         revision.userId = prefs.getUserId();
         revision.dialogId = prefs.getDialogId();
         revision.messageId = prefs.getMessageId();
@@ -16,7 +16,7 @@ public class AyuMessageUtils {
         }
     }
 
-    public static void mapMedia(AyuSavePreferences prefs, EditedMessage revision, boolean copyMedia) {
+    public static void mapMedia(AyuSavePreferences prefs, AyuMessageBase revision, boolean copyMedia) {
         if (copyMedia && prefs.getMessage() != null && prefs.getMessage().media != null) {
             if (prefs.getMessage().media.photo != null) {
                 revision.documentType = com.radolyn.ayugram.AyuConstants.DOCUMENT_TYPE_PHOTO;
