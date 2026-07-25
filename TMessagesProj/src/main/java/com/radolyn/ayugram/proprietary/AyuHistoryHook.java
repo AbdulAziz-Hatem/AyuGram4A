@@ -8,7 +8,17 @@ import java.util.ArrayList;
 
 public class AyuHistoryHook {
 
-    public static int[] getMinAndMaxIds(ArrayList<MessageObject> messArr) {
+    public static class MinMaxResult {
+        public int first;
+        public int second;
+
+        public MinMaxResult(int first, int second) {
+            this.first = first;
+            this.second = second;
+        }
+    }
+
+    public static MinMaxResult getMinAndMaxIds(ArrayList<MessageObject> messArr) {
         int minId = Integer.MAX_VALUE;
         int maxId = Integer.MIN_VALUE;
         for (MessageObject obj : messArr) {
@@ -17,9 +27,9 @@ public class AyuHistoryHook {
             if (id > maxId) maxId = id;
         }
         if (minId == Integer.MAX_VALUE) {
-            return new int[]{0, 0};
+            return new MinMaxResult(0, 0);
         }
-        return new int[]{minId, maxId};
+        return new MinMaxResult(minId, maxId);
     }
 
     public static void doHook(int currentAccount, ArrayList<MessageObject> messArr,
