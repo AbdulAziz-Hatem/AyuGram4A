@@ -1,10 +1,17 @@
-name: Build release APK
+name: Build and Release APK
 on:
   push:
+    branches: [ rewrite ]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version tag'
+        required: true
+        default: 'v1.0.0'
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     env:
       CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
       CCACHE_NOHASHDIR: "true"
@@ -21,17 +28,17 @@ jobs:
         with:
           path: ./API_KEYS
           contents: |
-            APP_ID = 6
-            APP_HASH = "eb06d4abfb49dc3eeb1aeb98ae0f581e"
+            APP_ID = ${{ secrets.APP_ID || 6 }}
+            APP_HASH = "${{ secrets.APP_HASH || 'eb06d4abfb49dc3eeb1aeb98ae0f581e' }}"
             MAPS_V2_API = ${{ secrets.MAPS_KEY }}
-            
             SIGNING_KEY_PASSWORD = ${{ secrets.CERT_KEY }}
             SIGNING_KEY_ALIAS = ${{ secrets.CERT_KEY }}
             SIGNING_KEY_STORE_PASSWORD = ${{ secrets.CERT_KEY }}
           write-mode: overwrite
 
-      - name: Update packages
-        run: sudo apt-get update
+      - name: Decode Keystore
+        if: secrets.CERT_KEY != ''
+        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > ./release.keystore
 
       - name: Setup Java
         uses: actions/setup-java@v3
@@ -47,8 +54,7 @@ jobs:
             ~/.gradle/caches/build-cache-*
             ~/.gradle/buildOutputCleanup/cache.properties
           key: gradle-builds-${{ github.sha }}
-          restore-keys: |
-            gradle-builds
+          restore-keys: gradle-builds
 
       - name: Set up ccache
         uses: hendrikmuhs/ccache-action@v1.2
@@ -61,25 +67,6 @@ jobs:
 
       - name: Prepare Environment
         run: |
-          echo "Removing large packages"
-          sudo apt-get update
-          sudo apt-get remove -y '^llvm-.*'
-          sudo apt-get remove -y 'php.*'
-          sudo apt-get remove -y '^mongodb-.*'
-          sudo apt-get remove -y '^mysql-.*'
-          sudo apt-get remove -y azure-cli firefox mono-devel libgl1-mesa-dri
-          sudo apt-get autoremove -y
-          sudo apt-get clean
-          
-          echo "Removing large directories"
-          sudo rm -rf /usr/share/dotnet/
-          sudo rm -rf /usr/local/graalvm/
-          sudo rm -rf /usr/local/.ghcup/
-          sudo rm -rf /usr/local/share/powershell
-          sudo rm -rf /usr/local/share/chromium
-          sudo rm -rf /usr/local/lib/node_modules
-          df -h
-          
           sudo apt-get install bison gcc make curl ninja-build ccache -y
 
       - name: Grant execute permission for gradlew
@@ -88,8 +75,36 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew assembleAfatRelease
 
-      - name: Upload
+      - name: Sign APK
+        if: secrets.CERT_KEY != ''
+        run: |
+          for apk in TMessagesProj/build/outputs/apk/afat/release/*.apk; do
+            if [ -f "$apk" ]; then
+              java -jar /usr/local/lib/android-sdk/build-tools/*/apksigner sign \
+                --ks ./release.keystore \
+                --ks-key-alias "${{ secrets.CERT_KEY }}" \
+                --ks-pass pass:"${{ secrets.CERT_KEY }}" \
+                --key-pass pass:"${{ secrets.CERT_KEY }}" \
+                --out "${apk%.*}-signed.apk" "$apk"
+            fi
+          done
+
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: Release APK
-          path: TMessagesProj/build/outputs/apk/afat/release/*.apk
+          name: AyuGram-APK
+          path: |
+            TMessagesProj/build/outputs/apk/afat/release/*.apk
+
+      - name: Create Release
+        if: github.event_name == 'workflow_dispatch'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.event.inputs.version }}
+          name: AyuGram ${{ github.event.inputs.version }}
+          body_file: CHANGELOG.md
+          files: |
+            TMessagesProj/build/outputs/apk/afat/release/*-signed.apk
+            TMessagesProj/build/outputs/apk/afat/release/*.apk
+          draft: false
+          prerelease: false
