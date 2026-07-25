@@ -37,9 +37,10 @@ jobs:
           write-mode: overwrite
 
       - name: Decode Keystore
-        if: ${{ secrets.CERT_KEY != '' }}
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > ./release.keystore 2>/dev/null || true
+          if [ -n "${{ secrets.KEYSTORE_BASE64 }}" ]; then
+            echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > ./release.keystore 2>/dev/null || true
+          fi
 
       - name: Setup Java
         uses: actions/setup-java@v3
@@ -78,18 +79,21 @@ jobs:
         run: ./gradlew assembleAfatRelease
 
       - name: Sign APK
-        if: ${{ secrets.CERT_KEY != '' }}
         run: |
-          for apk in TMessagesProj/build/outputs/apk/afat/release/*.apk; do
-            if [ -f "$apk" ]; then
-              java -jar /usr/local/lib/android-sdk/build-tools/*/apksigner sign \
-                --ks ./release.keystore \
-                --ks-key-alias "${{ secrets.CERT_KEY }}" \
-                --ks-pass pass:"${{ secrets.CERT_KEY }}" \
-                --key-pass pass:"${{ secrets.CERT_KEY }}" \
-                --out "${apk%.*}-signed.apk" "$apk"
-            fi
-          done
+          if [ -f ./release.keystore ]; then
+            for apk in TMessagesProj/build/outputs/apk/afat/release/*.apk; do
+              if [ -f "$apk" ]; then
+                java -jar /usr/local/lib/android-sdk/build-tools/*/apksigner sign \
+                  --ks ./release.keystore \
+                  --ks-key-alias "${{ secrets.CERT_KEY }}" \
+                  --ks-pass pass:"${{ secrets.CERT_KEY }}" \
+                  --key-pass pass:"${{ secrets.CERT_KEY }}" \
+                  --out "${apk%.*}-signed.apk" "$apk"
+              fi
+            done
+          else
+            echo "No keystore found - skipping signing"
+          fi
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v3
@@ -99,7 +103,7 @@ jobs:
             TMessagesProj/build/outputs/apk/afat/release/*.apk
 
       - name: Create Release
-        if: ${{ github.event_name == 'workflow_dispatch' }}
+        if: github.event_name == 'workflow_dispatch'
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ github.event.inputs.version }}
