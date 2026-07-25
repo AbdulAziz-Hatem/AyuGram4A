@@ -220,6 +220,10 @@ public class ActionBarMenuItem extends FrameLayout {
         }
         parentMenu = menu;
 
+        setFocusable(true);
+        setClickable(true);
+        setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
+
         if (text) {
             textView = new TextView(context);
             textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15);
@@ -461,6 +465,7 @@ public class ActionBarMenuItem extends FrameLayout {
         textView.setEllipsize(TextUtils.TruncateAt.END);
         textView.setTag(id);
         textView.setText(text);
+        textView.setContentDescription(text);
         popupLayout.addView(textView);
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) textView.getLayoutParams();
         if (LocaleController.isRTL) {
@@ -531,6 +536,7 @@ public class ActionBarMenuItem extends FrameLayout {
         cell.setTextAndIcon(text, icon, iconDrawable);
         cell.setMinimumWidth(AndroidUtilities.dp(196));
         cell.setTag(id);
+        cell.setContentDescription(text);
         popupLayout.addView(cell);
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) cell.getLayoutParams();
         if (LocaleController.isRTL) {
@@ -1929,12 +1935,14 @@ public class ActionBarMenuItem extends FrameLayout {
         super.onInitializeAccessibilityNodeInfo(info);
         if (iconView != null) {
             info.setClassName("android.widget.ImageButton");
+            info.setContentDescription(getContentDescription());
         } else if (textView != null) {
             info.setClassName("android.widget.Button");
             if (TextUtils.isEmpty(info.getText())) {
                 info.setText(textView.getText());
             }
         }
+        info.addAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_CLICK);
     }
 
     public void updateColor() {
@@ -2198,6 +2206,7 @@ public class ActionBarMenuItem extends FrameLayout {
                 cell.setTextAndIcon(text, icon, iconDrawable);
                 cell.setMinimumWidth(AndroidUtilities.dp(196));
                 cell.setTag(id);
+                cell.setContentDescription(text);
                 parent.popupLayout.addView(cell);
                 LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) cell.getLayoutParams();
                 if (LocaleController.isRTL) {
@@ -2377,6 +2386,7 @@ public class ActionBarMenuItem extends FrameLayout {
         ActionBarMenuSubItem cell = new ActionBarMenuSubItem(windowLayout.getContext(), needCheck, first, last, resourcesProvider);
         cell.setTextAndIcon(text, icon);
         cell.setMinimumWidth(AndroidUtilities.dp(196));
+        cell.setContentDescription(text);
         windowLayout.addView(cell);
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) cell.getLayoutParams();
         if (LocaleController.isRTL) {
