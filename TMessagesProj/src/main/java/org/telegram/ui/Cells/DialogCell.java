@@ -4395,15 +4395,16 @@ public class DialogCell extends BaseCell {
         info.setClassName(android.widget.Button.class.getName());
         info.setClickable(true);
         info.setFocusable(true);
-        String titleDesc = nameLayout != null ? nameLayout.getText().toString() : "";
-        String msgDesc = lastMessageString != null ? lastMessageString.toString() : "";
-        info.setContentDescription(titleDesc + ", " + msgDesc);
+        info.setContentDescription(buildAccessibilityDescription());
 
         if (isFolderCell() && archivedChatsDrawable != null && SharedConfig.archiveHidden && archivedChatsDrawable.pullProgress == 0.0f) {
             info.setVisibleToUser(false);
         } else {
             info.addAction(AccessibilityNodeInfo.ACTION_CLICK);
             info.addAction(AccessibilityNodeInfo.ACTION_LONG_CLICK);
+            if (lastTopicMessageUnread && canvasButton != null) {
+                info.addAction(new AccessibilityNodeInfo.AccessibilityAction(R.id.acc_action_topic_unread, LocaleController.getString("JumpToUnread", R.string.JumpToUnread)));
+            }
             if (!isFolderCell() && parentFragment != null) {
                 info.addAction(new AccessibilityNodeInfo.AccessibilityAction(R.id.acc_action_chat_preview, LocaleController.getString("AccActionChatPreview", R.string.AccActionChatPreview)));
             }
@@ -4416,8 +4417,7 @@ public class DialogCell extends BaseCell {
     }
 
     @Override
-    public void onPopulateAccessibilityEvent(AccessibilityEvent event) {
-        super.onPopulateAccessibilityEvent(event);
+    private CharSequence buildAccessibilityDescription() {
         StringBuilder sb = new StringBuilder();
         if (currentDialogFolderId == 1) {
             sb.append(LocaleController.getString("ArchivedChats", R.string.ArchivedChats));
@@ -4483,9 +4483,7 @@ public class DialogCell extends BaseCell {
             sb.append(". ");
         }
         if (message == null || currentDialogFolderId != 0) {
-            event.setContentDescription(sb);
-            setContentDescription(sb);
-            return;
+            return sb;
         }
         int lastDate = lastMessageDate;
         if (lastMessageDate == 0) {
@@ -4531,8 +4529,15 @@ public class DialogCell extends BaseCell {
                 sb.append(messageString);
             }
         }
-        event.setContentDescription(sb);
-        setContentDescription(sb);
+        return sb;
+    }
+
+    @Override
+    public void onPopulateAccessibilityEvent(AccessibilityEvent event) {
+        super.onPopulateAccessibilityEvent(event);
+        CharSequence desc = buildAccessibilityDescription();
+        event.setContentDescription(desc);
+        setContentDescription(desc);
     }
 
     private MessageObject getCaptionMessage() {
